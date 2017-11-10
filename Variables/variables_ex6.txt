@@ -1,0 +1,2 @@
+This error shows that Ruby tried to access a variable/ method named shoes but it could not find/ access it. 
+if it was a variable it was probably an inner scope variable that was trying to be accessed in an outer scope.
