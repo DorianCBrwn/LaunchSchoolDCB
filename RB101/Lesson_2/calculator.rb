@@ -1,17 +1,9 @@
-# ask the user for two numbers
-# ask the user for an operation to perform
-# perform the operation on two numbers
-# output the result
-
-# answer = Kernel.Kernel.gets()
-# Kernel.Kernel.puts(answer)
-
 def prompt(message)
   Kernel.puts("=> #{message}")
 end
 
 def valid_number?(num)
-  num.to_i() != 0
+  num.to_i.integer?
 end
 
 def operation_to_message(op)
