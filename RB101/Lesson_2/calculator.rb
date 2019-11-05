@@ -37,7 +37,6 @@ loop do # Main loop
   loop do
     prompt("What's the first number?")
     number1 = Kernel.gets.chomp
-
     if valid_number?(number1)
       break
     else
@@ -49,7 +48,6 @@ loop do # Main loop
   loop do
     prompt("What's the second number?")
     number2 = Kernel.gets.chomp
-
     if valid_number?(number2)
       break
     else
