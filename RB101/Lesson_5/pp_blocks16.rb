@@ -44,7 +44,7 @@ A
 C 
 =end
 def create_UUID
-  hex_arr = ('a'..'z').to_a | (1..9).to_a
+  hex_arr = ('a'..'f').to_a | (1..9).to_a
   first = hex_arr.sample(8).join
   second = hex_arr.sample(4).join
   third = hex_arr.sample(4).join
