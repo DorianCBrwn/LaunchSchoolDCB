@@ -9,6 +9,7 @@ end
 
 def display_board(brd)
   system('clear')
+  puts "You're a #{PLAYER_MARKER}. Computer is a #{COMPUTER_MARKER}"
   puts ""
   puts "     |     |"
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]}  "
@@ -76,7 +77,7 @@ end
    end
    nil
  end
-
+loop do 
  board = initialize_board
 
 loop do
@@ -96,3 +97,10 @@ if someone_won?(board)
 else
   prompt "It's a tie!"
 end
+
+prompt ("Play again? (y or n)")
+answer = gets.chomp
+break unless answer.downcase.start_with?'y'
+end
+
+prompt 'Thanks for playing tic tac toe, Good Bye!'
