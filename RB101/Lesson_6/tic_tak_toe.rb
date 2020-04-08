@@ -10,27 +10,7 @@ CHOOSE = "choose"
 PLAYER = 'player'
 COMPUTER = 'computer'
 
-def choose_play_order
-  loop do 
-    prompt "pick who goes first: enter 'p' for player or 'c' for computer"
-    choice = gets.chomp
-    if choice.downcase.start_with?('p')
-      prompt "Great the #{PLAYER} will go first."
-      return choice = PLAYER
-    elsif choice.downcase.start_with?('c')
-      prompt "Great the #{COMPUTER} will go first."
-      return choice = COMPUTER
-    else 
-      prompt "invalid response, please choose who will go first"
-      return choice = CHOOSE
-    end
-    break unless choice == CHOOSE
-  end
-end
 
-def set_play_order(choice)
-  
-end
 
 
 def find_at_risk_square(brd, mark)
@@ -50,6 +30,24 @@ def prompt(msg)
 end
 
 scoreboard = { player_w: 0, computer_w: 0 }
+
+def choose_play_order
+  loop do 
+    prompt "pick who goes first: enter 'p' for player or 'c' for computer"
+    choice = gets.chomp
+    if choice.downcase.start_with?('p')
+      prompt "Great the #{PLAYER} will go first."
+      return choice = PLAYER
+    elsif choice.downcase.start_with?('c')
+      prompt "Great the #{COMPUTER} will go first."
+      return choice = COMPUTER
+    else 
+      prompt "invalid response, please choose who will go first"
+      return choice = CHOOSE
+    end
+    break unless choice == CHOOSE
+  end
+end
 
 # rubocop: disable Metrics/AbcSize
 def display_board(brd)
@@ -113,11 +111,30 @@ def computer_places_piece!(brd)
   square = find_at_risk_square(brd, PLAYER_MARKER) if find_at_risk_square(brd, PLAYER_MARKER) 
   end
 
+ #place in center square if available 
+  # if square.nil?
+  #   square = 5 if empty_squares(brd).include?(5)
+  # else 
+  #   square = nil
+  # end
+
   if square.nil? 
      square = empty_squares(brd).sample
   end
 
   brd[square] = COMPUTER_MARKER
+end
+
+def play_piece!(board, current_player)
+  case current_player
+  when PLAYER then player_places_piece!(board)
+  when COMPUTER then computer_places_piece!(board)
+  end
+end
+
+
+def alternate_player(current_player)
+ current_player == PLAYER ? COMPUTER : PLAYER
 end
 
 def board_full?(brd)
@@ -148,7 +165,7 @@ def keep_score(scoreboard)
     prompt "Oh no, you lost the set"
     restart = true
   else
-    prompt "The current score: Player: #{scoreboard[:player_w]} - Computer: #{scoreboard[:computer_w] } wins"
+    prompt "The current score: Player: #{scoreboard[:player_w]} - #{scoreboard[:computer_w]} :Computer "
   end
   restart
 end
@@ -161,17 +178,14 @@ def track_winners(brd, scoreboard)
    end
 end
 
+
 loop do
   board = initialize_board
-
+current_player = choose_play_order
   loop do
-    choose_play_order
     display_board(board)
-
-    player_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
-
-    computer_places_piece!(board)
+    play_piece!(board,current_player)
+    current_player = alternate_player(current_player)
     break if someone_won?(board) || board_full?(board)
   end
 
