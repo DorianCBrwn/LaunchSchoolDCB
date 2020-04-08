@@ -106,17 +106,16 @@ end
 def computer_places_piece!(brd)
   #attack
   square = find_at_risk_square(brd, COMPUTER_MARKER)
+  binding.pry
   #defend
   if square.nil?
-  square = find_at_risk_square(brd, PLAYER_MARKER) if find_at_risk_square(brd, PLAYER_MARKER) 
+  square = find_at_risk_square(brd, PLAYER_MARKER)
   end
 
  #place in center square if available 
-  # if square.nil?
-  #   square = 5 if empty_squares(brd).include?(5)
-  # else 
-  #   square = nil
-  # end
+   if square.nil?
+     square = 5 if empty_squares(brd).include?(5)
+   end
 
   if square.nil? 
      square = empty_squares(brd).sample
@@ -198,7 +197,6 @@ current_player = choose_play_order
   end
 
   track_winners(board, scoreboard)
-
 
  break if keep_score(scoreboard)
 
