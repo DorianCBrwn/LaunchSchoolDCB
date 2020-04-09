@@ -1,35 +1,20 @@
-SUITS = {'C' => 'Clubs', 'S' => 'Spades', 'D' => 'Diamonds', 'H' => 'Hearts'}
-FACE_CARDS = {'J' => "Jack", 'Q' => "Queen", 'K' => "King"}
-ACES = {'A' => "Ace"}
-
-def create_cards(prefix, suit, delimiter='')
-  cards = []
-  prefix.each do |char|
-    unless delimiter.empty? 
-      delimiter = ' of ' + SUITS[char]
-    end
-    suit.each do |letter|
-      cards << {"#{char}" + delimiter + "#{letter}" => char}
-    end
-  end
-  cards
-end
-
-face_delimiter = SUITS.values.map{|word| ' of ' + word}
-#TODO fix create_cards method to create multiple types of cards
-
-# create_cards((2..9), SUITS.keys)
-create_cards(FACE_CARDS.keys, Array.new(3, 10), SUITS)
+NUMBERS = (2..10).to_a
+FACES = %w(Jack Queen King Ace)
+CARD_VALUES= (1..11).to_a
+SUITS = [:club, :diamond, :heart, :spade ]
+#
+#Methods
 
 def initialize_deck
-
+   new_deck = SUITS.each_with_object({}) { |suit, hash| hash[suit] = NUMBERS + FACES}
 end
 
-def deal_card(player)
-
+def deal_card(player, deck)
+array.delete_at(rand(array.length))
 end
 
-def player_turn
+def player_turn(deck)
+  player_hand
 
 end
 
@@ -62,4 +47,7 @@ def track_winners
 end
 
 
-
+#Program
+loop do 
+deck = initialize_deck
+end
