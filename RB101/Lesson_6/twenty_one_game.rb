@@ -1,8 +1,5 @@
-# frozen_string_literal: true
 
-require 'pry'
 # Methods
-
 def prompt(msg)
   puts "=> #{msg}"
 end
@@ -46,25 +43,23 @@ def stay?(answer)
   answer.downcase.start_with?('s')
 end
 
-def show_hand(hand)
+def show_hand(hand, total)
   hand.each_with_index do |card, _index|
     word = card.include?('Ace') ? 'an' : 'a'
     if card == hand.last
       print "and #{word} #{card[0]} of #{card[1]} "
-      puts "for a total of #{calculate_hand(hand)}. "
+      puts "for a total of #{total}. "
     else
       print "#{word} #{card[0]} of #{card[1]}, "
     end
   end
 end
 
-def hand_busted?(hand)
-  calculate_hand(hand) > 21
+def hand_busted?(total)
+  total > 21
 end
 
-def detect_result(dealer_hand, player_hand)
-  player_total = calculate_hand(player_hand)
-  dealer_total = calculate_hand(dealer_hand)
+def detect_result(dealer_total, player_total)
 
   if player_total > 21
     :player_busted
@@ -79,8 +74,8 @@ def detect_result(dealer_hand, player_hand)
   end
 end
 
-def display_result(dealer_hand, player_hand)
-  result = detect_result(dealer_hand, player_hand)
+def display_result(dealer_total, player_total)
+  result = detect_result(dealer_total, player_total)
 
   case result
   when :player_busted
@@ -111,10 +106,13 @@ loop do
 
   deal_card(deck, player_hand)
   deal_card(deck, dealer_hand)
+  
+  player_total = calculate_hand(player_hand)
+  dealer_total = calculate_hand(dealer_hand)
 
   prompt "The Dealer has #{dealer_hand[0][0]} of #{dealer_hand[0][1]} and ?"
   print '=> You have '
-  show_hand(player_hand)
+  show_hand(player_hand, player_total)
   # player Turn
   loop do
     player_turn = nil
@@ -128,50 +126,52 @@ loop do
 
     if player_turn == 'h'
       deal_card(deck, player_hand)
+      player_total = calculate_hand(player_hand)
       prompt 'You chose to hit!'
       print '=> You now have '
-      show_hand(player_hand)
+      show_hand(player_hand, player_total)
     end
 
-    break if player_turn == 's' || hand_busted?(player_hand)
+    break if player_turn == 's' || hand_busted?(player_total)
   end
 
-  if hand_busted?(player_hand)
+  if hand_busted?(player_total)
     display_result(dealer_hand, player_hand)
     play_again? ? next : break
   else
-    prompt "You stayed at #{calculate_hand(player_hand)}"
+    prompt "You stayed at #{player_total}"
   end
 
   # dealer turn
   prompt 'Dealer turn...'
 
   loop do
-    break if calculate_hand(dealer_hand) >= 17
+    break if dealer_total >= 17
 
     prompt 'Dealer hits!'
     deal_card(deck, dealer_hand)
+    dealer_total = calculate_hand(dealer_hand)
     prompt "Dealer's cards are now:"
-    show_hand(dealer_hand)
+    show_hand(dealer_hand, dealer_total)
   end
 
-  if hand_busted?(dealer_hand)
-    prompt "Dealer total is now: #{calculate_hand(dealer_hand)}"
+  if hand_busted?(dealer_total)
+    prompt "Dealer total is now: #{dealer_total}"
     display_result(dealer_hand, player_hand)
     play_again? ? next : break
   else
-    prompt "Dealer stays at #{calculate_hand(dealer_hand)}"
+    prompt "Dealer stays at #{dealer_total}"
   end
 
   # both player and dealer stays - compare cards!
   puts '=============='
   puts 'Dealer has:'
-  show_hand(dealer_hand)
+  show_hand(dealer_hand, dealer_total)
   prompt 'Player has:'
-  show_hand(player_hand)
+  show_hand(player_hand, player_total)
   puts '=============='
 
-  display_result(dealer_hand, player_hand)
+  display_result(dealer_total, player_total)
 
   break unless play_again?
 end
