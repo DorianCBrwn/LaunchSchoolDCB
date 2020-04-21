@@ -43,13 +43,15 @@ def calculate_hand(hand)
   total
 end
 
-def deal_cards_msg
-  prompt 'Dealing Cards'
-  3.times do
-    print '. '
-    sleep(0.5)
+def prompt_progress_bar(bar_length)
+  progress_bar = '.'
+  print progress_bar
+  bar_length.times do |i|
+
+    print"\r #{progress_bar * i}"
+    sleep(0.15)
   end
-  puts "Lets Start! \n"
+  puts ''
 end
 
 def stay?(answer)
@@ -135,22 +137,30 @@ def round_end(dealer_hand, dealer_total, player_hand, player_total)
   puts '=============='
 end
 
+def early_game_exit_msg(games_played)
+  if games_played[:player_wins] > games_played[:dealer_wins]
+    prompt "You win the game!"
+  elsif games_played[:player_wins] < games_played[:dealer_wins]
+    prompt "You Lose!"
+  else
+    prompt "It's a tie, you and the dealer combined for #{games_played[:ties]}."
+  end
+end
+
 def display_game_end(games_played)
   if games_played[:dealer_wins] >= 5
-    prompt "The dealer won #{games_played[:dealer_wins]} rounds out of #{games_played[:total_games]}"
-    prompt "Oh no, looks like you lost. Better luck next time"
+    prompt "The dealer won #{games_played[:dealer_wins]}\
+ rounds out of #{games_played[:total_games]}"
+    prompt "Oh no, looks like you lost. Better luck next time."
   elsif games_played[:player_wins] >= 5
     prompt "Congradulations! - You win!"
-    prompt "You won #{games_played[:player_wins]} rounds out of #{games_played[:total_games]}"
+    prompt "You won #{games_played[:player_wins]}\
+ rounds out of #{games_played[:total_games]}."
   else
-    prompt "You won #{games_played[:player_wins]} rounds; the Dealer won #{games_played[:dealer_wins]} out of #{games_played[:total_games]} games"
-    if games_played[:player_wins] > games_played[:dealer_wins]
-      prompt "You win the game!"
-    elsif games_played[:player_wins] < games_played[:dealer_wins]
-      prompt "You Lose!"
-    else
-      prompt "It's a tie, you and the dealer combined for #{games_played[:ties]}."
-    end
+    prompt "You won #{games_played[:player_wins]} rounds."
+    prompt "the Dealer won #{games_played[:dealer_wins]} out of\
+ #{games_played[:total_games]} games."
+    early_game_exit_msg(games_played)
   end
 end
 
@@ -158,7 +168,8 @@ end
 games_played = { dealer_wins: 0, player_wins: 0, total_games: 0, ties: 0 }
 prompt "Welcome to #{WIN_CONDITION}."
 prompt "Whomever gets closer to #{WIN_CONDITION} without going over wins the round."
-sleep(2)
+
+puts ''
 
 loop do
   deck = initialize_deck
@@ -171,10 +182,9 @@ loop do
   player_total = calculate_hand(player_hand)
   dealer_total = calculate_hand(dealer_hand)
 
-  system('clear') || system('cls')
-
-  deal_cards_msg
-
+  prompt 'Dealing Cards'
+  prompt_progress_bar(8)
+  prompt "Lets Play \n"
   prompt "The Dealer has #{dealer_hand[0][0]} of #{dealer_hand[0][1]} and ?"
   print '=> You have '
   show_hand(player_hand, player_total)
