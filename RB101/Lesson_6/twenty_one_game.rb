@@ -1,4 +1,4 @@
-
+require 'pry'
 # Methods
 def prompt(msg)
   puts "=> #{msg}"
@@ -49,6 +49,7 @@ def show_hand(hand, total)
     if card == hand.last
       print "and #{word} #{card[0]} of #{card[1]} "
       puts "for a total of #{total}. "
+      puts 
     else
       print "#{word} #{card[0]} of #{card[1]}, "
     end
@@ -60,7 +61,6 @@ def hand_busted?(total)
 end
 
 def detect_result(dealer_total, player_total)
-
   if player_total > 21
     :player_busted
   elsif dealer_total > 21
@@ -74,18 +74,17 @@ def detect_result(dealer_total, player_total)
   end
 end
 
-def display_result(dealer_total, player_total)
+def display_round_result(dealer_total, player_total)
   result = detect_result(dealer_total, player_total)
-
   case result
   when :player_busted
-    prompt 'You busted! Dealer wins!'
+    prompt 'You busted! Dealer wins the round!'
   when :dealer_busted
-    prompt 'Dealer busted! You win!'
+    prompt 'Dealer busted! You win the round!'
   when :player
-    prompt 'You win!'
+    prompt 'You win the round!'
   when :dealer
-    prompt 'Dealer wins!'
+    prompt 'Dealer wins the round!'
   when :tie
     prompt "It's a tie!"
   end
@@ -98,15 +97,61 @@ def play_again?
   answer.downcase.start_with?('y')
 end
 
+def end_game?(games_played)
+  games_played[:player_wins] >= 5 || games_played[:dealer_wins] >= 5
+end
+
+def track_winners(games_played, dealer_total, player_total)
+  games_played[:total_games] += 1
+  case detect_result(dealer_total, player_total)
+  when :player_busted then games_played[:dealer_wins] += 1
+  when :dealer then games_played[:dealer_wins] += 1
+  when :dealer_busted then games_played[:player_wins] += 1
+  when :player then games_played[:player_wins] += 1
+  when :tie then games_played[:tie] += 1
+  end
+  games_played
+end
+
+def round_end(dealer_hand, dealer_total, player_hand, player_total)
+  puts '=============='
+  puts 'Dealer has:'
+  show_hand(dealer_hand, dealer_total)
+  prompt 'Player has:'
+  show_hand(player_hand, player_total)
+  puts '=============='
+end
+
+def display_game_end(games_played)
+  if games_played[:dealer_wins] >= 5
+    prompt "The dealer won #{games_played[:dealer_wins]} rounds out of #{games_played[:total_games]}"
+    prompt "Oh no, looks like you lost. Better luck next time"
+  elsif games_played[:player_wins] >= 5
+    prompt "Congradulations! - You win!"
+    prompt "You won #{games_played[:player_wins]} rounds out of #{games_played[:total_games]}"
+  else
+    prompt "You won #{games_played[:player_wins]} rounds; the Dealer won #{games_played[:dealer_wins]} out of #{games_played[:total_games]} games"
+    if games_played[:player_wins] > games_played[:dealer_wins]
+      prompt "You win the game!"
+    elsif games_played[:player_wins] < games_played[:dealer_wins]
+      prompt "You Lose!"
+    else
+      prompt "It's a tie, you and the dealer combined for #{games_played[:ties]}."
+    end
+  end
+end
+
 # Program
+games_played = { dealer_wins: 0, player_wins: 0, total_games: 0, ties: 0 }
 loop do
+  p games_played
   deck = initialize_deck
   player_hand = []
   dealer_hand = []
 
   deal_card(deck, player_hand)
   deal_card(deck, dealer_hand)
-  
+
   player_total = calculate_hand(player_hand)
   dealer_total = calculate_hand(dealer_hand)
 
@@ -115,6 +160,7 @@ loop do
   show_hand(player_hand, player_total)
   # player Turn
   loop do
+
     player_turn = nil
     loop do
       prompt 'Would you like to (h)it or (s)tay?'
@@ -136,7 +182,10 @@ loop do
   end
 
   if hand_busted?(player_total)
-    display_result(dealer_hand, player_hand)
+    round_end(dealer_hand, dealer_total, player_hand, player_total)
+    display_round_result(dealer_total, player_total)
+    track_winners(games_played, dealer_total, player_total)
+    break if end_game?(games_played)
     play_again? ? next : break
   else
     prompt "You stayed at #{player_total}"
@@ -156,24 +205,22 @@ loop do
   end
 
   if hand_busted?(dealer_total)
-    prompt "Dealer total is now: #{dealer_total}"
-    display_result(dealer_hand, player_hand)
+    round_end(dealer_hand, dealer_total, player_hand, player_total)
+    display_round_result(dealer_total, player_total)
+    track_winners(games_played, dealer_total, player_total)
+    break if end_game?(games_played)
     play_again? ? next : break
   else
     prompt "Dealer stays at #{dealer_total}"
   end
 
+
   # both player and dealer stays - compare cards!
-  puts '=============='
-  puts 'Dealer has:'
-  show_hand(dealer_hand, dealer_total)
-  prompt 'Player has:'
-  show_hand(player_hand, player_total)
-  puts '=============='
-
-  display_result(dealer_total, player_total)
-
+  round_end(dealer_hand, dealer_total, player_hand, player_total)
+  display_round_result(dealer_total, player_total)
+  track_winners(games_played, dealer_total, player_total)
+  break if end_game?(games_played)
   break unless play_again?
 end
-
+display_game_end(games_played)
 prompt 'Thank you for playing Twenty-One! Good bye!'
