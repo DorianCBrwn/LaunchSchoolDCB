@@ -252,3 +252,20 @@ loop do
 end
 display_game_end(games_played)
 prompt "Thank you for playing #{WIN_CONDITION}! Good bye!"
+
+=begin 
+Problem:
+  Rephrase: 
+Examples/tests: 
+
+INPUT:
+OUTPUT:
+Rules:
+    Explicit:
+    Implicit:
+
+D: 
+
+Approach:
+C:
+=end
