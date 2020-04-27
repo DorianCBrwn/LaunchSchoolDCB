@@ -18,25 +18,46 @@ Rules:
 D: array
 
 Approach:
-split the string into an array of characters
-split up the array into two arrays each containing left or right parentheses
-compare the two arrays 
-  if the size of the 2 arrays is equal then return true else return false
+# split the string into an array of characters
+# iterate through the array
+# find open brackets
+#   for each open bracket find a matching closing bracket
+#   remove pair from array and sent to temp array
+#   if a bracket doesn't have a match return false
+#
+#   Iterate through array until first closing bracket
+#   find a matching open bracket
+#   remove both brackets from array add to temp array
+#   compare size of temp array to original array
+#   if temp array < original array return false
+
 C:
 
 
 =end
 
-def valid_parentheses(string)
-  str_arr = string.chars
-  split_arr = str_arr.partition { |ele| ele == "(" }
-  split_arr[0].size == split_arr[1].size
+def valid_parentheses(parentheses)
+  parentheses_arr = parentheses.chars
+  temp_arr = []
+  parentheses_arr.each do |paren|
+    if paren == ")"
+      temp_arr << [paren, parentheses_arr[parentheses_arr.index { |ele| ele == ")"}] ]
+    elsif paren == "("
+      temp_arr << paren
+    end
+  end
+  temp_arr
 end
-p valid_parentheses( "()" ) == true
-p valid_parentheses("(())((()())())") == true
-p valid_parentheses("((())))(") == false
-p valid_parentheses("((())))(()") == false
 
+# p valid_parentheses( "()" ) == true
+# p valid_parentheses("(())((()())())") == true
+p valid_parentheses("((())))(") == false
+# p valid_parentheses("((())))(()") == false
+
+# p valid_parentheses("(()(")
+# "(())((()())())".size
+# "((())))(".size
+# "((())))(()".size
 
 =begin 
 Problem:# Given an array of strings made only from lowercase letters, return an array of all characters that show up in
@@ -70,7 +91,11 @@ C:
 
 
 
-# Given an array of strings made only from lowercase letters, return an array of all characters that show up in all strings within the given array (including duplicates).  For example, if a character occurs 3 times in all strings but not 4 times, you need to include that character three times in the final answer.
+# Given an array of strings made only from lowercase letters, return an array of
+# all characters that show up in all strings within the given array (including
+# duplicates).  For example, if a character occurs 3 times in all strings but
+# not 4 times, you need to include that character three times in the final
+# answer.
 
 
 # take the first word
