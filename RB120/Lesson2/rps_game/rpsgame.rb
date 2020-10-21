@@ -1,8 +1,18 @@
+require 'pry'
 class Player
-  attr_accessor :move, :name
+  attr_accessor :move, :name, :score
 
   def initialize
     set_name
+    @score = 0
+  end
+
+  def add_score
+    self.score += 1
+  end
+
+  def display_score
+    puts "#{name} has #{score} points."
   end
 end
 
@@ -21,7 +31,7 @@ class Human < Player
   def choose
     choice = nil
     loop do
-      puts "Please choose rock, paper, or scissors:"
+      puts "Please choose rock, paper, scissors, lizard, or spock:"
       choice = gets.chomp
       break if Move::VALUES.include?(choice)
       puts "Sorry, invalid choice."
@@ -43,7 +53,7 @@ end
 class Move
   include Comparable
 
-  VALUES = ['rock', 'paper', 'scissors']
+  VALUES = ['rock', 'paper', 'scissors', 'lizard', 'spock']
 
   def initialize(value)
     @value = value
@@ -61,33 +71,51 @@ class Move
     @value == 'paper'
   end
 
+  def lizard?
+    @value == 'lizard'
+  end
+
+  def spock?
+    @value == 'spock'
+  end
+
   def >(other_move)
-    if (rock? && other_move.scissors?) ||
-       (paper? && other_move.rock?) ||
-       (scissors? && other_move.paper?)
-      return true
-    end
+    (rock? && other_move.lizard?) ||
+      (paper? && other_move.rock?) ||
+      (scissors? && other_move.paper?) ||
+      (lizard? && other_move.spock?) ||
+      (spock? && other_move.scissors?) ||
+      (scissors? && other_move.lizard?) ||
+      (rock? && other_move.scissors?) ||
+      (lizard? && other_move.paper?) ||
+      (spock? && other_move.rock?) || 
+      (paper? && other_move.spock?)
+      
   end
 
   def <(other_move)
-    if rock? && other_move.paper?
-      return true
-    elsif paper? && other_move.scissors?
-      return true
-    elsif scissors? && other_move.rock?
-      return true
-    end
+    (rock? && other_move.paper?) ||
+      (paper? && other_move.scissors?) ||
+      (scissors? && other_move.rock?) ||
+      (rock? && other_move.spock?) ||
+      (paper? && other_move.lizard?) || 
+      (scissors? && other_move.spock?) ||
+      (lizard? && other_move.rock?) ||
+      (lizard? && other_move.scissors?) ||
+      (spock? && other_move.paper?) ||
+      (spock? && other_move.lizard?)
 
-    false
   end
 
   def to_s
     @value
   end
 end
+#
 # Game Orcastration Engine
 class RPSGame
   attr_accessor :human, :computer
+
   def initialize
     @human = Human.new
     @computer = Computer.new
@@ -101,30 +129,24 @@ class RPSGame
     puts "Thanks for playing Rock, Paper, Scissors. Good bye!"
   end
 
-  def display_winner
+  def display_moves
     puts "#{human.name} chose #{human.move}."
     puts "#{computer.name} chose #{computer.move}"
+  end
 
+  def display_winner
     if human.move > computer.move
+      human.add_score
+      puts human.display_score
       puts "#{human.name} won!"
     elsif human.move < computer.move
+      computer.add_score
+      puts computer.display_score
       puts "#{computer.name} won!"
     else
       puts "It's a tie"
 
     end
-    # case human.move
-    # when 'rock'
-    #   puts "It's a tie!" if computer.move == 'rock'
-    #   puts "#{human.name} won!" if computer.move == 'scissors'
-    #   puts "#{computer.name} won!" if computer.move == 'paper'
-    # when 'paper'
-    #   puts "It's a tie!" if computer.move == 'paper'
-    #   puts "#{human.name} won!" if computer.move == 'rock'
-    #   puts "It's a tie!" if computer.move == 'scissors'
-    #   puts "#{human.name} won!" if computer.move == 'paper'
-    #   puts "#{computer.name} won!" if computer.move == 'rock'
-    # end
   end
 
   def play_again?
@@ -136,16 +158,16 @@ class RPSGame
       puts "Sorry, must be y or n."
     end
 
-    return true if answer == 'y'
-    false
+    return false if answer.downcase == 'n'
+    return true if answer.downcase == 'y'
   end
 
   def play
     display_welcome_message
-
     loop do
       human.choose
       computer.choose
+      display_moves
       display_winner
       break unless play_again?
     end
@@ -162,3 +184,4 @@ RPSGame.new.play
 #     # not sure what the "state" of a rule object should be
 #   end
 # end
+#
