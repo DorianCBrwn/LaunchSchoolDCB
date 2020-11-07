@@ -1,6 +1,106 @@
 require 'pry'
+
+class Move
+  include Comparable
+  attr_reader :name, :messages, :win_conditions
+
+  def initialize(params = {})
+    @name = params.fetch(:name, self.to_s)
+    @messages = params.fetch(:messages, {})
+    @win_conditions = params.fetch(:win_conditions, [])
+  end
+  
+
+  def to_s
+    self.class.to_s.capitalize
+  end
+
+  def <=>(other_move)
+    if win_conditions.include?(other_move.name)
+      1
+    elsif other_move.win_conditions.include?(self.name)
+      -1
+    else
+      0
+    end
+  end
+
+  def win_message(other_move)
+    puts "#{name} #{messages[other_move]}!" 
+  end
+
+end
+
+class Rock < Move
+
+  attr_reader :win_conditions
+
+  def initialize
+    super
+    @messages = { lizard: "crushes Lizard", scissors: "crushes Scissors" }
+    @win_conditions = ['Lizard', 'Scissors']
+  end
+
+end
+
+class Paper < Move
+  attr_reader :win_conditions
+
+  def initialize
+    super
+    @messages = { rock: "covers Rock", spock: "disproves Spock" }
+    @win_conditions = ['Rock', 'Spock']
+  end
+end
+
+class Scissors < Move
+  attr_reader :win_conditions
+
+  def initialize
+    super
+    @messages = { paper: "cuts Paper", lizard: "decapitates Lizard" }
+    @win_conditions = ['Paper', 'Lizard']
+  end
+end
+
+class Lizard < Move
+  attr_reader :win_conditions
+
+  def initialize
+    super
+    @messages = { paper: "eats Paper", spock: "poisons Spock" }
+    @win_conditions = ['Spock', 'Paper']
+  end
+end
+
+class Spock < Move
+  attr_reader :win_conditions
+
+  def initialize
+    super
+    @messages = { scissors: "smashes Scissors", rock: "vaporizes Rock" }
+    @win_conditions = ['Rock', 'Scissors']
+  end
+end
+
+class Round
+
+  def add_score
+    self.score += 1
+  end
+end
+
+class Display
+
+
+end
+
 class Player
   attr_accessor :move, :name, :score
+
+  MOVESET = { 'rock' => Rock.new, 'scissors' => Scissors.new, 
+              'paper' => Paper.new, 'lizard' => Lizard.new, 
+              'spock' => Spock.new } 
 
   def initialize
     set_name
@@ -11,12 +111,28 @@ class Player
     self.score += 1
   end
 
-  def display_score
-    puts "#{name} has #{score} points."
+  def display_score(move, score)
+    puts "#{move} has #{score} points."
   end
 end
 
 class Human < Player
+  attr_accessor :move
+
+
+  def choose
+    choice = nil
+    loop do
+      puts "Please choose rock, paper, scissors, lizard, or spock:"
+      choice = gets.chomp
+      break if MOVESET.keys.include?(choice)
+      puts "Sorry, invalid choice."
+    end
+    @move = MOVESET.fetch(choice)
+  end
+
+  private
+
   def set_name
     n = nil
     loop do
@@ -28,16 +144,7 @@ class Human < Player
     self.name = n
   end
 
-  def choose
-    choice = nil
-    loop do
-      puts "Please choose rock, paper, scissors, lizard, or spock:"
-      choice = gets.chomp
-      break if Move::VALUES.include?(choice)
-      puts "Sorry, invalid choice."
-    end
-    self.move = Move.new(choice)
-  end
+
 end
 
 class Computer < Player
@@ -46,75 +153,18 @@ class Computer < Player
   end
 
   def choose
-    self.move = Move.new(Move::VALUES.sample)
+    @move = Computer::MOVESET.values.sample
   end
 end
 
-class Move
-  include Comparable
-
-  VALUES = ['rock', 'paper', 'scissors', 'lizard', 'spock']
-
-  def initialize(value)
-    @value = value
-  end
-
-  def scissors?
-    @value == 'scissors'
-  end
-
-  def rock?
-    @value == 'rock'
-  end
-
-  def paper?
-    @value == 'paper'
-  end
-
-  def lizard?
-    @value == 'lizard'
-  end
-
-  def spock?
-    @value == 'spock'
-  end
-
-  def >(other_move)
-    (rock? && other_move.lizard?) ||
-      (paper? && other_move.rock?) ||
-      (scissors? && other_move.paper?) ||
-      (lizard? && other_move.spock?) ||
-      (spock? && other_move.scissors?) ||
-      (scissors? && other_move.lizard?) ||
-      (rock? && other_move.scissors?) ||
-      (lizard? && other_move.paper?) ||
-      (spock? && other_move.rock?) || 
-      (paper? && other_move.spock?)
-      
-  end
-
-  def <(other_move)
-    (rock? && other_move.paper?) ||
-      (paper? && other_move.scissors?) ||
-      (scissors? && other_move.rock?) ||
-      (rock? && other_move.spock?) ||
-      (paper? && other_move.lizard?) || 
-      (scissors? && other_move.spock?) ||
-      (lizard? && other_move.rock?) ||
-      (lizard? && other_move.scissors?) ||
-      (spock? && other_move.paper?) ||
-      (spock? && other_move.lizard?)
-
-  end
-
-  def to_s
-    @value
-  end
+class Round
+  attr_accessor :score, :history, :round_number
 end
-#
+
 # Game Orcastration Engine
 class RPSGame
   attr_accessor :human, :computer
+  VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock']
 
   def initialize
     @human = Human.new
@@ -145,7 +195,6 @@ class RPSGame
       puts "#{computer.name} won!"
     else
       puts "It's a tie"
-
     end
   end
 
@@ -163,6 +212,7 @@ class RPSGame
   end
 
   def play
+      #binding.pry
     display_welcome_message
     loop do
       human.choose
@@ -175,13 +225,5 @@ class RPSGame
   end
 end
 
-# not sure where "compare" goes yet
-# def compare(move1, move2)
-RPSGame.new.play
 
-# class Rule
-#   def initialize
-#     # not sure what the "state" of a rule object should be
-#   end
-# end
-#
+ RPSGame.new.play
