@@ -141,5 +141,6 @@ class Light
   end
 
 end
-The unessessary return on line 140. The instance variables brightness and color are also unused.
+The unessessary return on line 140. The instance variables brightness and color are also unused
+
 =end
