@@ -103,13 +103,15 @@ end
 
 #Exercise 4
 class CircularQueue
-  
-  def initialize
+  attr_accessor :buffer, :write_idx
 
+  def initialize(size)
+    @buffer = Array.new(size)
+    @write_idx = 0
   end
 
-  def enqueue
-
+  def enqueue(ele)
+    buffer[write_idx] = ele
   end
 
   def dequeue
@@ -126,7 +128,7 @@ puts queue.dequeue == 1
 
 queue.enqueue(3)
 queue.enqueue(4)
-puts queue.dequeue == 2
+puts queue.dequeue == 0
 
 queue.enqueue(5)
 queue.enqueue(6)
@@ -156,17 +158,17 @@ puts queue.dequeue == 6
 puts queue.dequeue == 7
 puts queue.dequeue == nil
 
-#Exercise 
+#Exercise
 #class GuessingGame
   attr_accessor :guesses, :answer, :tries, :range
-  
+
   def initialize
     @tries = 7
     @answer = rand(1..100)
     @guesses = nil
     @range = 1..100
   end
-  
+
   def play
     p tries
     loop do
@@ -174,15 +176,15 @@ puts queue.dequeue == nil
     p @answer
     guess
     #check_guess
-    break if check_guess  
+    break if check_guess
       reduce_tries
     end
   end
-  
-  def reduce_tries 
+
+  def reduce_tries
     self.tries -= 1
   end
-  
+
   def guess
     n = nil
     loop do
@@ -193,7 +195,7 @@ puts queue.dequeue == nil
     puts "Invalid guess. Enter a number between 1 and 100: #{n}"
     end
   end
-  
+
   def check_guess
     if guesses == answer
       puts "That's the number!"
@@ -204,7 +206,7 @@ puts queue.dequeue == nil
       puts "your number is too high"
     end
   end
-  
+
 end
 
 
