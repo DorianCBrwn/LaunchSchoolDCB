@@ -103,19 +103,35 @@ end
 
 #Exercise 4
 class CircularQueue
-  attr_accessor :buffer, :write_idx
+  attr_accessor :buffer, :write_idx, :read_idx
 
   def initialize(size)
     @buffer = Array.new(size)
     @write_idx = 0
+    @read_idx = 0
+  end
+
+  def move_idx(ele)
+    if ele > buffer.size
+      ele = 0
+    else
+      ele += 1
+    end
   end
 
   def enqueue(ele)
+    move_idx(write_idx)
     buffer[write_idx] = ele
   end
 
   def dequeue
+    buffer[read_idx]
+    move_idx(read_idx)
+    buffer[read_idx] = nil
+  end
 
+  def to_s
+    buffer.to_s
   end
 end
 
@@ -124,6 +140,7 @@ puts queue.dequeue == nil
 
 queue.enqueue(1)
 queue.enqueue(2)
+puts queue
 puts queue.dequeue == 1
 
 queue.enqueue(3)
@@ -159,6 +176,7 @@ puts queue.dequeue == 7
 puts queue.dequeue == nil
 
 #Exercise
+=begin
 #class GuessingGame
   attr_accessor :guesses, :answer, :tries, :range
 
@@ -212,3 +230,4 @@ end
 
 game = GuessingGame.new
 game.play
+=end
