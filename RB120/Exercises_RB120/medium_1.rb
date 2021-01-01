@@ -118,13 +118,13 @@ class CircularQueue
   end
 
   def enqueue(ele)
+    move_read_idx unless is_value_overwritten?
     buffer[write_idx] = ele
-    move_read_idx  if is_value_overwritten?
     move_write_idx
   end
 
   def is_value_overwritten?
-    [nil].any? {|val| true} && write_idx == read_idx
+   buffer[write_idx].nil?
   end
 
   def dequeue
@@ -140,16 +140,9 @@ class CircularQueue
 end
 
 queue = CircularQueue.new(3)
-puts queue.read_idx
-puts queue.write_idx
 puts queue.dequeue == nil
-
-puts queue.read_idx
-puts queue.write_idx
-
 queue.enqueue(1)
 queue.enqueue(2)
-puts queue.dequeue == 1
 queue.enqueue(3)
 queue.enqueue(4)
 puts queue.dequeue == 2
@@ -166,11 +159,11 @@ puts queue.dequeue == nil
 
 queue.enqueue(1)
 queue.enqueue(2)
-puts queue.dequeue #== 1
+puts queue.dequeue == 1
 
 queue.enqueue(3)
 queue.enqueue(4)
-puts queue.dequeue #== 2
+puts queue.dequeue == 2
 
 queue.enqueue(5)
 queue.enqueue(6)
