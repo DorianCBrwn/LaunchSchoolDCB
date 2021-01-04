@@ -97,7 +97,6 @@ end
 
 class Undergraduate < Student
 end
-=end
 #Exercise 4
 class CircularQueue
   attr_accessor :buffer, :write_idx, :read_idx, :size
@@ -173,3 +172,75 @@ puts queue.dequeue == 5
 puts queue.dequeue == 6
 puts queue.dequeue == 7
 puts queue.dequeue == nil
+=end
+#Exercise 5
+
+#Exercise 6: Number Guesser 1
+class GuessingGame
+  def initialize
+    @guess_range = 1..100
+    @guess = guess_range.to_a.sample
+    @remaining_guesses = 7
+    @user_guess = nil
+  end
+
+   def check_remaining_guesses
+     if remaining_guesses == 0
+      puts "Oh no you're all out of guesses, the correct answer was #{guess}."
+      return true
+     else
+     puts "You have #{@remaining_guesses} remaining."
+     return false
+     end
+   end
+
+
+   def prompt_user_input
+    puts "Enter a number between #{guess_range.first} and #{guess_range.last}:"
+   end
+
+  def play
+    loop do
+      break if check_remaining_guesses
+      prompt_user_input
+      set_guess
+      break if check_guess
+      decrement_guesses
+    end
+  end
+
+  private
+  attr_accessor :guess, :guess_range, :user_guess, :remaining_guesses
+
+  def set_guess
+    guess = nil
+    loop do
+      guess = gets.chomp.to_i
+      break if guess_range.include?(guess)
+      puts "Invalid Guess"
+      prompt_user_input
+    end
+    self.user_guess = guess
+  end
+
+  def check_guess
+    if user_guess > @guess
+      puts "Your guess is too high."
+      return false
+    elsif user_guess < @guess
+      puts "Your guess is too low."
+      return false
+    else
+      puts "That's the number!"
+      return true
+    end
+  end
+
+  def decrement_guesses
+    self.remaining_guesses = remaining_guesses - 1
+  end
+
+end
+
+game = GuessingGame.new
+game.play
