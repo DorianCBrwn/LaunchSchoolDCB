@@ -1,3 +1,4 @@
+require 'pry'
 =begin #Exercise 1
 class Machine
 
@@ -324,6 +325,7 @@ end
 game = GuessingGame.new(501, 1500)
 game.play
 
+#Exercise 8 Highest & Lowest rank Card
 class Card
   include Comparable
   attr_reader :rank, :suit
@@ -376,3 +378,73 @@ cards = [Card.new(8, 'Diamonds'),
 puts cards.min.rank == 8
 puts cards.max.rank == 8
 =end
+# Exercise 9: Deck of Cards
+class Card
+  include Comparable
+  attr_reader :rank, :suit
+
+  VALUES = { 'Jack' => 11, 'Queen' => 12, 'King' => 13, 'Ace' => 14 }
+  def initialize(rank, suit)
+    @rank = rank
+    @suit = suit
+  end
+
+  def to_s
+    "#{rank} of #{suit}."
+  end
+
+  def value
+    VALUES.fetch(rank, rank)
+  end
+
+  def <=>(other_card)
+     value <=> other_card.value
+  end
+end
+
+class Deck
+  RANKS = ((2..10).to_a + %w(Jack Queen King Ace)).freeze
+  SUITS = %w(Hearts Clubs Diamonds Spades).freeze
+
+attr_accessor :cards, :card_count
+
+  def initialize
+    @cards = generate_cards
+    @card_count = cards.size
+  end
+
+  def draw
+    reset_deck
+    drawn_card = cards.pop
+    self.card_count -= 1
+    drawn_card
+  end
+
+  def generate_cards
+    cards = []
+    SUITS.each do |suit|
+      RANKS.each do |rank|
+        cards << Card.new(rank, suit)
+      end
+    end
+    cards.shuffle
+  end
+
+  def to_s
+    "#{cards.map(&:to_s)}"
+  end
+
+  def reset_deck
+    self.cards = generate_cards if card_count == 0
+  end
+
+end
+
+deck = Deck.new
+drawn = []
+52.times { drawn << deck.draw }
+p drawn.count { |card| card.rank == 5 } == 4
+p drawn.count { |card| card.suit == 'Hearts' } == 13
+ drawn2 = []
+ 52.times { drawn2 << deck.draw }
+p drawn != drawn2 # Almost always.
