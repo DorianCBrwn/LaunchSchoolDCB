@@ -406,32 +406,35 @@ class Deck
   RANKS = ((2..10).to_a + %w(Jack Queen King Ace)).freeze
   SUITS = %w(Hearts Clubs Diamonds Spades).freeze
 
-attr_accessor :cards, :card_count
 
   def initialize
     @cards = generate_cards
     @card_count = cards.size
   end
 
+  def to_s
+    "#{cards.map(&:to_s)}"
+  end
+
   def draw
     reset_deck
     drawn_card = cards.pop
-    self.card_count -= 1
+    self.card_count = card_count - 1
     drawn_card
   end
 
+private
+
+attr_accessor :cards, :card_count
+
   def generate_cards
-    cards = []
+    cards_arr = []
     SUITS.each do |suit|
       RANKS.each do |rank|
-        cards << Card.new(rank, suit)
+        cards_arr << Card.new(rank, suit)
       end
     end
-    cards.shuffle
-  end
-
-  def to_s
-    "#{cards.map(&:to_s)}"
+    cards_arr.shuffle
   end
 
   def reset_deck
