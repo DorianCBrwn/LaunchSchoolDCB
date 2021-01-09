@@ -455,7 +455,6 @@ p drawn != drawn2 # Almost always.
 # Include Card and Deck classes from the last two exercises.
 
 # Exercise 10: Poker!
-require 'pry'
 class Card
   include Comparable
   attr_reader :rank, :suit
@@ -578,6 +577,7 @@ class PokerHand
   end
 
   def two_pair?
+    find_kinds(2, 2)
   end
 
   def pair?
@@ -589,7 +589,7 @@ class PokerHand
   end
 
   def in_sequence?(sequence)
-    @cards_in_hand.all?{ |card| sequence.include?(card.rank) }
+    sequence.all?{ |rank|get_ranks.include?(rank) }
   end
 
   def get_sequence
@@ -598,14 +598,17 @@ class PokerHand
     Deck::RANKS[start_index, 5]
   end
 
-   def find_kinds(n)
+   def find_kinds(n, sets=1)
+    sets == get_ranks.tally.values.count(n)
+   end
+
+   def get_ranks
     hand_ranks = []
     @cards_in_hand.each do |card|
       hand_ranks << card.rank
     end
-    hand_ranks.tally.values.any?{|count| count == n}
+    hand_ranks
    end
-
 end
 
 hand = PokerHand.new(Deck.new)
@@ -618,7 +621,7 @@ class Array
   alias_method :draw, :pop
 end
 
-# Test that we can identify each PokerHand typ. .
+# Test that we can identify each PokerHand type.
 hand = PokerHand.new([
   Card.new(10,      'Hearts'),
   Card.new('Ace',   'Hearts'),
@@ -635,7 +638,6 @@ hand = PokerHand.new([
   Card.new(10,      'Clubs'),
   Card.new('Jack',  'Clubs')
 ])
-
 puts hand.evaluate == 'Straight flush'
 
 hand = PokerHand.new([
@@ -648,6 +650,15 @@ hand = PokerHand.new([
 puts hand.evaluate == 'Four of a kind'
 
 hand = PokerHand.new([
+  Card.new(3, 'Hearts'),
+  Card.new(3, 'Clubs'),
+  Card.new(5, 'Diamonds'),
+  Card.new(3, 'Spades'),
+  Card.new(5, 'Hearts')
+])
+puts hand.evaluate == 'Full house'
+
+hand = PokerHand.new([
   Card.new(10, 'Hearts'),
   Card.new('Ace', 'Hearts'),
   Card.new(2, 'Hearts'),
@@ -655,15 +666,6 @@ hand = PokerHand.new([
   Card.new(3, 'Hearts')
 ])
 puts hand.evaluate == 'Flush'
-
-hand = PokerHand.new([
-  Card.new(8,      'Clubs'),
-  Card.new(9,      'Diamonds'),
-  Card.new(10,     'Clubs'),
-  Card.new(7,      'Hearts'),
-  Card.new('Jack', 'Clubs')
-])
-puts hand.evaluate == 'Straight'
 
 hand = PokerHand.new([
   Card.new(8,      'Clubs'),
@@ -691,7 +693,7 @@ hand = PokerHand.new([
   Card.new(6, 'Diamonds')
 ])
 puts hand.evaluate == 'Three of a kind'
-=begin
+
 hand = PokerHand.new([
   Card.new(9, 'Hearts'),
   Card.new(9, 'Clubs'),
@@ -717,5 +719,4 @@ hand = PokerHand.new([
   Card.new(9,      'Spades'),
   Card.new(3,      'Diamonds')
 ])
-
 puts hand.evaluate == 'High card'
