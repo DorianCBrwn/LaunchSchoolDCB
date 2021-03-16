@@ -132,6 +132,14 @@ class TodoList
     self
   end
 
+  def select
+    results = TodoList.new(title)
+    each do |todo|
+      results << todo if yield(todo)
+    end
+    results
+  end
+
   # rest of class needs implementation
   private
   attr_accessor :todos
