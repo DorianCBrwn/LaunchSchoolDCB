@@ -1,74 +1,82 @@
-class Player
-    def initialize
-      # what would the "data" or "states" of a Player object entail?
-      # maybe cards? a name?
-    end
+class Participant
+  attr_accessor :hand
 
-    def hit
-    end
-
-    def stay
-    end
-
-    def busted?
-    end
-
-    def total
-      # definitely looks like we need to know about "cards" to produce some total
-    end
+  def initialize
+    @hand= []
   end
 
-  class Dealer
-    def initialize
-      # seems like very similar to Player... do we even need this?
-    end
+  def hit
 
-    def deal
-      # does the dealer or the deck deal?
-    end
-
-    def hit
-    end
-
-    def stay
-    end
-
-    def busted?
-    end
-
-    def total
-    end
   end
 
-  class Participant
-    # what goes in here? all the redundant behaviors from Player and Dealer?
+  def stay
   end
 
-  class Deck
-    def initialize
-      # obviously, we need some data structure to keep track of cards
-      # array, hash, something else?
-    end
-
-    def deal
-      # does the dealer or the deck deal?
-    end
+  def busted?
   end
 
-  class Card
-    def initialize
-      # what are the "states" of a card?
-    end
+  def total
+  # definitely looks like we need to know about "cards" to produce some total
   end
+end
 
-  class Game
-    def start
-      deal_cards
-      show_initial_cards
-      player_turn
-      dealer_turn
-      show_result
-    end
+class Player < Participant
+end
+
+class Dealer < Participant
+end
+class Deck
+  RANKS = ((2..10).to_a + %w(Jack Queen King Ace)).freeze
+  SUITS = %w(Hearts Clubs Diamonds Spades).freeze
+#41:14
+ attr_accessor :deck
+
+def initialize
+    generate_cards
+end
+
+def generate_cards
+  self.deck = RANKS.product(SUITS).map do |rank, suit|
+    Card.new(rank, suit)
   end
+  self.deck.shuffle!
+end
 
-  Game.new.start
+def to_s
+  "#{self.deck.map(&:to_s)}"
+end
+
+def deal
+
+end
+end
+
+class Card
+  attr_reader :rank, :suit
+
+def initialize(rank, suit)
+    @rank = rank
+    @suit = suit
+end
+
+def to_s
+  "#{rank} of #{suit}"
+end
+
+end
+
+class Game
+  def initialize
+    deck = Deck.new
+  end
+def start
+    deal_cards
+    show_initial_cards
+    player_turn
+    dealer_turn
+    show_result
+end
+end
+puts Card.new("Jack", "Spades")
+puts Deck.new
+  #Game.new.start
