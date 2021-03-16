@@ -62,9 +62,7 @@ class TodoList
     end
   end
 
-  def <<(todo_item)
-    self.add(todo_item)
-  end
+  alias_method  :<<, :add
 
   def size
     todos.size
