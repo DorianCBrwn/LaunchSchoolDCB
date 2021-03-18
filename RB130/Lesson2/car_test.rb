@@ -1,8 +1,12 @@
 require 'minitest/autorun'
+require ''
 
 require_relative 'car'
 
 class CarTest < MiniTest::Test
+  def setup
+    @car = Car.new
+  end
 
   def test_car_exists
     car = Car.new
