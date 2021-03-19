@@ -50,15 +50,8 @@ class TodoList
   end
 
   def add(todo_item)
-    begin
-      if validate_todo_type(todo_item)
-        todos << todo_item
-      else
-        raise TypeError.new("Can only add Todo objects")
-      end
-    rescue TypeError => e
-      puts e.message
-    end
+    raise TypeError unless todo_item.instance_of?(Todo)
+    todos << todo_item
   end
 
   alias_method  :<<, :add
@@ -89,12 +82,10 @@ class TodoList
 
   def mark_done_at(index)
     item_at(index).done!
-    puts "Todo: #{item_at(index).title} is done!"
   end
 
   def mark_undone_at(index)
     item_at(index).undone!
-    puts "Todo: #{item_at(index).title} not done!"
   end
 
   def done!
