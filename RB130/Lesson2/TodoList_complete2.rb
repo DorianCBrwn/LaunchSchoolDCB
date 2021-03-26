@@ -49,150 +49,106 @@ class TodoList
     @todos = []
   end
 
-  def add(todo_item)
-    raise TypeError unless todo_item.instance_of?(Todo)
-    todos << todo_item
-  end
-
-  alias_method  :<<, :add
-
   def size
-    todos.size
+    @todos.size
   end
 
   def first
-    todos.first
+    @todos.first
   end
 
   def last
-    todos.last
-  end
-
-  def to_a
-    todos.clone
-  end
-
-  def done?
-    todos.all?(&:done?)
-  end
-
-  def item_at(index)
-    todos.fetch(index)
-  end
-
-  def mark_done_at(index)
-    item_at(index).done!
-  end
-
-  def mark_undone_at(index)
-    item_at(index).undone!
-  end
-
-  def done!
-    todos.map(&:done!)
+    @todos.last
   end
 
   def shift
-    todos.shift
+    @todos.shift
   end
 
   def pop
-    todos.pop
+    @todos.pop
   end
 
-  def remove_at(index)
-    item_at(index)
-    todos.delete_at(index)
+  def done?
+    @todos.all? { |todo| todo.done? }
+  end
+
+  def <<(todo)
+    raise TypeError, 'can only add Todo objects' unless todo.instance_of? Todo
+
+    @todos << todo
+  end
+  alias_method :add, :<<
+
+  def item_at(idx)
+    @todos.fetch(idx)
+  end
+
+  def mark_done_at(idx)
+    item_at(idx).done!
+  end
+
+  def mark_undone_at(idx)
+    item_at(idx).undone!
+  end
+
+  def done!
+    @todos.each_index do |idx|
+      mark_done_at(idx)
+    end
+  end
+
+  def remove_at(idx)
+    @todos.delete(item_at(idx))
   end
 
   def to_s
     text = "---- #{title} ----\n"
-    text << todos.map(&:to_s).join("\n")
+    text << @todos.map(&:to_s).join("\n")
     text
   end
 
+  def to_a
+    @todos.clone
+  end
+
   def each
-    counter = 0
-    while counter < todos.size
-      yield(todos[counter])
-      counter += 1
+    @todos.each do |todo|
+      yield(todo)
     end
     self
   end
 
   def select
-    results = TodoList.new(title)
+    list = TodoList.new(title)
     each do |todo|
-      results << todo if yield(todo)
+      list.add(todo) if yield(todo)
     end
-    results
+    list
   end
 
+  # returns first Todo by title, or nil if no match
   def find_by_title(title)
-    each do |todo|
-      return todo if todo.title == title
-    end
-    nil
+    select { |todo| todo.title == title }.first
   end
 
   def all_done
-    select do |todo|
-      todo.done?
-    end
+    select { |todo| todo.done? }
   end
 
   def all_not_done
-    select do |todo|
-      todo.done? == false
-    end
+    select { |todo| !todo.done? }
   end
 
-  def mark_done(string)
-    each do |todo|
-      todo.done! if todo.title == string
-    end
+  def mark_done(title)
+    find_by_title(title) && find_by_title(title).done!
   end
 
   def mark_all_done
-    each do |todo|
-      todo.done!
-    end
+    each { |todo| todo.done! }
   end
 
   def mark_all_undone
-    each do |todo|
-      todo.undone!
-    end
+    each { |todo| todo.undone! }
   end
-
-  private
-  attr_accessor :todos
-
-  def validate_todo_type(todo_item)
-    todo_item.class == Todo
-  end
-
-
 end
-
-todo1 = Todo.new("Buy milk")
-todo2 = Todo.new("Clean room")
-todo3 = Todo.new("Go to gym")
-
-list = TodoList.new("Today's Todos")
-list.add(todo1)
-list.add(todo2)
-list.add(todo3)
-
-todo1.done!
-
-p list.find_by_title("Buy milk")
-p list.find_by_title("This is not a Todo")
-
-p list.all_done
-p list.all_not_done
- list.mark_done("Clean room")
- list.mark_all_done
-p list.all_done
-p list.mark_all_undone
-p list.all_not_done
