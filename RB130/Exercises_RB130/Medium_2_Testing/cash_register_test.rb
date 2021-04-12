@@ -8,12 +8,18 @@ require_relative 'transaction'
 class CashRegisterTest < MiniTest::Test
 
  def setup
-  @cash_register1 = CashRegister.new(100)
+  @cash_register1 = CashRegister.new(1000)
   @purchase1 = Transaction.new(25.00)
-  @purchase1.amount_paid = 25.00
+  @purchase1.amount_paid = 30.00
  end
 
  def test_accept_money
-  assert_equal 125, @cash_register1.accept_money(@purchase1)
+  previous_ammount = @cash_register1.total_money
+  new_ammount = previous_ammount + @purchase1.amount_paid
+  assert_equal new_ammount, @cash_register1.accept_money(@purchase1)
+ end
+
+ def test_change
+  assert_equal (@purchase1.amount_paid - @purchase1.item_cost), @cash_register1.change(@purchase1)
  end
 end
