@@ -22,4 +22,10 @@ class CashRegisterTest < MiniTest::Test
  def test_change
   assert_equal (@purchase1.amount_paid - @purchase1.item_cost), @cash_register1.change(@purchase1)
  end
+
+ def test_give_receipt
+  item_cost = 10
+  purchase1 = Transaction.new(item_cost)
+  assert_output ("You've paid $#{item_cost}.\n"){ || @cash_register1.give_receipt(purchase1)}
+ end
 end
