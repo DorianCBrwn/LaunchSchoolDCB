@@ -21,21 +21,26 @@ Approach:
 C:
 =end
 class Triangle
-  attr_accessor :s1, :s2, :s3
+  attr_accessor :sides
   def initialize(s1,s2,s3)
-    @s1, @s2, @s3 = s1, s2, s3
     @sides = [s1, s2, s3]
   end
 
-  def kind(triangle)
+  def kind
     case
-    when triangle.is_equilateral? then "equilateral"
+    when self.is_equilateral? then "equilateral"
+    when self.is_isosceles? then "isosceles"
+    else "scalene"
     end
 
   end
 
-  def is_equilateral?(sides)
+  def is_equilateral?
     sides.all? { |side| @sides.first == side }
+  end
+
+  def is_isosceles?
+    sides.tally.values.any? {|side| side == 2}
   end
 
 end

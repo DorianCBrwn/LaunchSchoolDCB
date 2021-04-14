@@ -1,5 +1,7 @@
 require 'minitest/autorun'
-require_relative 'triangles'
+require 'minitest/reporters'
+require_relative 'triangle'
+Minitest::Reporters.use!
 
 class TriangleTest < Minitest::Test
   def test_equilateral_equal_sides
