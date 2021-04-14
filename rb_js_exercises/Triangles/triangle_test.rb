@@ -10,49 +10,41 @@ class TriangleTest < Minitest::Test
   end
 
   def test_larger_equilateral_equal_sides
-    skip
     triangle = Triangle.new(10, 10, 10)
     assert_equal 'equilateral', triangle.kind
   end
 
   def test_isosceles_last_two_sides_equal
-    skip
     triangle = Triangle.new(3, 4, 4)
     assert_equal 'isosceles', triangle.kind
   end
 
   def test_isosceles_first_last_sides_equal
-    skip
     triangle = Triangle.new(4, 3, 4)
     assert_equal 'isosceles', triangle.kind
   end
 
   def test_isosceles_first_two_sides_equal
-    skip
     triangle = Triangle.new(4, 4, 3)
     assert_equal 'isosceles', triangle.kind
   end
 
   def test_isosceles_exactly_two_sides_equal
-    skip
     triangle = Triangle.new(10, 10, 2)
     assert_equal 'isosceles', triangle.kind
   end
 
   def test_scalene_no_equal_sides
-    skip
     triangle = Triangle.new(3, 4, 5)
     assert_equal 'scalene', triangle.kind
   end
 
   def test_scalene_larger_no_equal_sides
-    skip
     triangle = Triangle.new(10, 11, 12)
     assert_equal 'scalene', triangle.kind
   end
 
   def test_scalene_no_equal_sides_descending
-    skip
     triangle = Triangle.new(5, 4, 2)
     assert_equal 'scalene', triangle.kind
   end
