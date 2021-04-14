@@ -50,7 +50,6 @@ class TriangleTest < Minitest::Test
   end
 
   def test_small_triangles_are_legal
-    skip
     triangle = Triangle.new(0.4, 0.6, 0.3)
     assert_equal 'scalene', triangle.kind
   end
