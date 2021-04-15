@@ -47,7 +47,7 @@ attr_reader :strand
     str_arr1 = strand.chars
     str_arr2 = strand2.chars
 
-    [str_arr1, str_arr2].sort.reverse
-
+    str_arr1 = str_arr1[0, str_arr2.length] if str_arr1.length >= str_arr2.length
+    [str_arr1, str_arr2]
   end
 end
