@@ -18,9 +18,36 @@ Rules:
           second DNA strand string as an argument and returns the differences
           between the two strands — the Hamming distance.
   Implicit:
+        - Use the size of the smaller strand as the iterator
 D:
 - We're given the DNA strands as strings.
 - Additionally, we may want to use a collection to help us iterate through each character of the DNA strand.
 Approach:
 C:
 =end
+
+class DNA
+attr_reader :strand
+
+  def initialize(strand)
+    @strand = strand
+  end
+
+  def hamming_distance(strand2)
+    difference = 0
+    str1, str2 = strand.convert_strand(strand)
+
+    str1.each_with_index do |letter, index|
+      difference += 1 unless letter == str2[index]
+    end
+    difference
+  end
+
+  def convert_strands(strand2)
+    str_arr1 = strand.chars
+    str_arr2 = strand2.chars
+
+    [str_arr1, str_arr2].sort.reverse
+
+  end
+end
