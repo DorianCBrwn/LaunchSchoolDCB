@@ -1,9 +1,15 @@
 require 'minitest/autorun'
+require 'minitest/reporters'
 require_relative 'point_mutations'
+Minitest::Reporters.use!
 
 class DNATest < Minitest::Test
   def test_no_difference_between_empty_strands
     assert_equal 0, DNA.new('').hamming_distance('')
+  end
+
+  def test_convert_strands
+    assert_equal ['GGACTGA'.chars, 'GGACGACTATGGGG'.chars], DNA.new('GGACTGA').convert_strands('GGACGACTATGGGG')
   end
 
   def test_no_difference_between_identical_strands
