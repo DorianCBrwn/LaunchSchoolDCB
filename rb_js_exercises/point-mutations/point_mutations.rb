@@ -35,7 +35,7 @@ attr_reader :strand
 
   def hamming_distance(strand2)
     difference = 0
-    str1, str2 = strand.convert_strand(strand)
+    str1, str2 = self.convert_strands(strand2)
 
     str1.each_with_index do |letter, index|
       difference += 1 unless letter == str2[index]
