@@ -35,19 +35,16 @@ class DNATest < Minitest::Test
   end
 
   def test_ignores_extra_length_on_other_strand_when_longer
-
     assert_equal 3, DNA.new('AAACTAGGGG').hamming_distance('AGGCTAGCGGTAGGAC')
   end
 
   def test_ignores_extra_length_on_original_strand_when_longer
-
     strand = 'GACTACGGACAGGGTAGGGAAT'
     distance = 'GACATCGCACACC'
     assert_equal 5, DNA.new(strand).hamming_distance(distance)
   end
 
   def test_does_not_actually_shorten_original_strand
-
     dna = DNA.new('AGACAACAGCCAGCCGCCGGATT')
     assert_equal 1, dna.hamming_distance('AGGCAA')
     assert_equal 4, dna.hamming_distance('AGACATCTTTCAGCCGCCGGATTAGGCAA')
