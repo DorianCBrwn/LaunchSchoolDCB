@@ -30,17 +30,18 @@ class Octal
   end
 
   def to_decimal
-    exponent = @octal.length
+    exponent = @octal.length - 1
     @octal.chars.reduce(0) do|total, char|
-      total += char.to_i * 8 ** exponent
+      product = char.to_i * (8 ** exponent)
       exponent -= 1
+      total += product
     end
   end
 
   private
 
   def validate_input(value)
-    return 0 if value.match?(/[^0-7]/)
+    return '0' if value.match?(/[^0-7]/)
     value
   end
 end
