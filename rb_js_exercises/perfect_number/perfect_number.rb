@@ -19,23 +19,22 @@ C:
 =end
 
 class PerfectNumber
-  def initialize
-    @int = nil
-  end
 
   def self.classify(int)
-     int < 0 ? (raise StandardError.new) : @int = int
-    return 'perfect' if find_factors.sum == @int
-    return 'abundant' if find_factors.sum > @int
+    raise StandardError.new if  int < 1
+    return 'perfect' if find_factors(int).sum == int
+    return 'abundant' if find_factors(int).sum > int
     'deficient'
   end
+  class << self
   private
 
-  def self.find_factors
-    factors = []
-    1.upto(@int -1) do |i|
-     factors << i if @int % i == 0
+    def find_factors(int)
+      factors = []
+      (1...int).each do |i|
+      factors << i if int % i == 0
+      end
+      factors
     end
-    factors
   end
 end
