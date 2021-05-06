@@ -114,45 +114,46 @@ C:
 #
 
 class Diamond
-  ALPHA = [*'A'..'Z']
-  def self.make_diamond(middle_letter)
-    range = [*'A'...middle_letter] + [*'A'..middle_letter].reverse
+ ALPHA = [*'A'..'Z']
+
+  def self.make_diamond(center_letter)
+    range = [*'A'...center_letter] + [*'A'..center_letter].reverse
+    width = diamond_width(center_letter)
     arr = []
-    space_value = 1
-    range.each_with_index do |letter, index|
-      case letter
-      when 'A'
-        arr << " " * range.index(middle_letter) + letter + " " * range.index(middle_letter)
-      when 'B'
-        arr << " " * (range.index(middle_letter) - (range.index('B'))) + letter + " " + letter + " " * (range.index(middle_letter) - (range.index('B')))
-      else
-        arr << " " * (range.index(middle_letter) - (range.index(letter))) + letter + " " * inner_space(space_value) + letter + " " * (range.index(middle_letter) - (range.index(letter)))
-      end
+    range.each do |letter|
+      arr << make_row(letter).center(width)
     end
-    arr.join("\n")
+    arr.join("\n") + "\n"
   end
 
-  def self.diamond_width(letter)
-    ALPHA.index(letter) * 2
+  private
+
+  def self.make_row(letter)
+    str = ""
+    case letter
+
+    when 'A' then return'A'
+    when 'B' then return 'B B'
+    else
+     return str = "#{letter}#{inner_space(letter)}#{letter}"
+    end
   end
 
-  def self.inner_space(space_value)
-    space_value + 2
+  def self.outer_space(letter)
   end
+
+  def self.inner_space(letter)
+    case letter
+    when 'A' then ""
+    when 'B' then " "
+    else
+      (" " * 3) + (" " * (2 * (letter.ord - "C".ord)))
+    end
+  end
+
+    def self.diamond_width(letter)
+      return 1 if letter == 'A'
+
+      inner_space(letter).count(' ') + 2
+    end
 end
-
-puts Diamond.make_diamond('D')
-
-=begin
-Problem:
-Rephrase:
-Examples/tests:
-INPUT:
-OUTPUT:
-Rules:
-  Explicit:
-  Implicit:
-D:
-Approach:
-C:
-=end
