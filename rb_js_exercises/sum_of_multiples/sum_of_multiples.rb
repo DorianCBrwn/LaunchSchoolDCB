@@ -46,5 +46,4 @@ class SumOfMultiples
   def self.to(limit)
     SumOfMultiples.new.to(limit)
   end
-
 end
