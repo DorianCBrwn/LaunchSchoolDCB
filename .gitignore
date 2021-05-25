@@ -50,3 +50,7 @@ build-iPhoneSimulator/
 .rvmrc
 RB120/Assessments/Rb120assessment.rb
 RB120/Assessments/Written120.md
+RB130/.DS_Store
+.DS_Store
+RB130/Assessment139/cipher.rb
+RB130/Assessment139/.ruby-version
