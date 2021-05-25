@@ -34,7 +34,9 @@ set @min to minutes
 
 at method
 
+
 to_s method
+-return a string representation of hours prepended by 0
 
 + / - method
 
@@ -46,4 +48,30 @@ class Clock
   def initialize(hr, min = 0)
 
   end
+
+  def at
+
+  end
+
+  def to_s
+
+  end
+
+  def <=>(other)
+
+  end
 end
+
+=begin
+Problem:
+Rephrase:
+Examples/tests:
+INPUT:
+OUTPUT:
+Rules:
+  Explicit:
+  Implicit:
+D:
+Approach:
+C:
+=end
