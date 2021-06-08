@@ -216,6 +216,7 @@ Style/WordArray:
   Description: 'Use %w or %W for arrays of words.'
   Enabled: false
 
+
 Metrics/AbcSize:
   Description: >-
                  A calculated magnitude based on number of assignments,
