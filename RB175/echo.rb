@@ -1,6 +1,6 @@
 require "socket"
 
-server = TCPServer.new("local host", 3003)
+server = TCPServer.new("localhost", 3003)
 
 loop do
   client = server.accept
