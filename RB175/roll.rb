@@ -1,31 +1,27 @@
-require 'socket'
+require "socket"
+
+def parse_request(request_line)
+  http_method, path, q_string_version = request_line.partition("/")
+  q_string, _version = q_string_version.split(" ")
+  q_string = q_string[1..-1]
+  q_string = q_string.split("&")
+  q_string.each_with_object({}) do |pair, hash|
+    key, value = pair.split("=")
+    hash[key] = value
+  end
+end
 
 server = TCPServer.new("localhost", 3003)
-
-
-
-def http_parser(request)
-    http_method, path, query_string = request.partition("/")
-end
-
-def querty_string_parser(q_string)
-  q_string.shift.
-end
-
 
 loop do
   client = server.accept
   request_line = client.gets
   puts request_line
 
-  http_method, path, query_string = http_parser(request_line)
 
-  client.puts http_method == "GET"
-  client.puts path == '/'
-  client.puts query_string == {"rolls" => "2", "sides" => "6"}
-
-  client.puts request_line
+  client.puts http_method
+  client.puts path
+  client.puts q_string
   client.puts rand(6) + 1
   client.close
-
 end
