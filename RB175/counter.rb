@@ -18,6 +18,9 @@ loop do
   client = server.accept
   request_line = client.gets
   puts request_line
+
+  next unless request_line
+
   http_method, path, params = parse_request(request_line)
 
   client.puts 'HTTP/1.0 200 OK'
