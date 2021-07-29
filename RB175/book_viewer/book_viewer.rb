@@ -10,7 +10,7 @@ end
 
 get '/chapters/:number' do
   number = params[:number]
-  @title = "Chapter #{number}"
+  @subtitle = "Chapter #{number}"
 
   @contents = File.readlines('data/toc.txt')
   @chapter = File.read("data/chp#{number}.txt")
