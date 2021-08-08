@@ -36,24 +36,28 @@ get '/chapters/:number' do
   erb :chapter
 end
 
+# Creating a method to iterate over the list of chapters in the table of contents.
 # Calls the block for each chapter, passing that chapter's number, name, and
 # contents.
 def each_chapter
+  # Use each_with_index to iterate through the @contents array and use the index to identify the chapter number.
   @contents.each_with_index do |name, index|
-    number = index + 1
-    contents = File.read("data/chp#{number}.txt")
-    yield number, name, contents
+    number = index + 1 # add 1 to the index because index starts at 0
+    contents = File.read("data/chp#{number}.txt") # assign contents to the output of File.read
+    yield number, name, contents # yield the parameters defined to block for further processing
   end
 end
 
 # This method returns an Array of Hashes representing chapters that match the
 # specified query. Each Hash contain values for its :name and :number keys.
 def chapters_matching(query)
-  results = []
+  results = [] # define empty array to store hashes
+
+  # guard clause to return an empty array if query is empty or nil
 
   return results if !query || query.empty?
 
-  each_chapter do |number, name, contents|
+  each_chapter do |number, name, contents| # Iterates through each chapter and checks for query
     results << { number: number, name: name } if contents.include?(query)
   end
 
