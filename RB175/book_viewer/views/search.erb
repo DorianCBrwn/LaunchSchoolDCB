@@ -11,10 +11,18 @@
     <p>Sorry, no matches were found.</p>
   <% else %>
     <h2 class="content-subhead">Results for '<%= params[:query]%>'</h2>
-
     <ul>
       <% @results.each do |result| %>
-        <li><a href="/chapters/<%= result[:number] %>"><%= result[:name] %></a></li>
+        <li>
+          <h4><%= result[:name] %></h4>
+          <ul>
+            <% result[:paragraphs].each do |index, text| %>
+              <li>
+                <a href="/chapters/<%= result[:number] %>#paragraph<%= index %>"><%= text %></a>
+              </li>
+            <% end %>
+          </ul>
+        </li>
       <% end %>
     </ul>
   <% end %>

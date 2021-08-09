@@ -7,10 +7,10 @@ before do
 end
 
 helpers do
-  def in_paragraphs(chapter_content)
-    chapter_content.split("\n\n")
-                   .map { |line| "<p>#{line}</p>" }
-                   .join("\n")
+  def in_paragraphs(text)
+    text.split("\n\n").each_with_index.map do |line, index|
+      "<p id=paragraph#{index}>#{line}</p>"
+    end.join
   end
 end
 
@@ -54,11 +54,14 @@ def chapters_matching(query)
   results = [] # define empty array to store hashes
 
   # guard clause to return an empty array if query is empty or nil
-
-  return results if !query || query.empty?
+  return results unless query
 
   each_chapter do |number, name, contents| # Iterates through each chapter and checks for query
-    results << { number: number, name: name } if contents.include?(query)
+    matches = {}
+    contents.split("\n\n").each_with_index do |paragraph, index|
+      matches[index] = paragraph if paragraph.include?(query)
+    end
+    results << { number: number, name: name, paragraphs: matches } if matches.any?
   end
 
   results
