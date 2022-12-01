@@ -8,5 +8,5 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 ruby '~> 3.0.0'
 
 gem 'erubis'
-gem 'sinatra', '~>1.4.7'
+gem 'sinatra', '~>2.2.3'
 gem 'sinatra-contrib'
